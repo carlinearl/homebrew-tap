@@ -13,6 +13,15 @@ cask "bforartists" do
   depends_on macos: ">= :big_sur"
 
   app "Bforartists.app"
+  shimscript = "#{staged_path}/bforartists.wrapper.sh"
+  binary shimscript, target: "bforartists"
+
+  preflight do
+    File.write shimscript, <<~EOS
+      #!/bin/bash
+      '#{appdir}/Bforartists.app/Contents/MacOS/Bforartists' "$@"
+    EOS
+  end
 
   zap trash: [
     "~/Library/Application Support/Bforartists",
